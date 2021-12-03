@@ -1,2 +1,2 @@
-# Web MVC app Storage
+# Web app Storage
 
