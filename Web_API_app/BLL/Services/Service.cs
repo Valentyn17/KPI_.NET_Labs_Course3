@@ -159,7 +159,9 @@ namespace BLL.Services
 
         public void DeleteGood(int id)
         {
-
+            var good=Database.Goods.Find(i => i.Id == id);
+            if (good == null)
+                throw new ArgumentException("Such product does not exist");
             Database.Goods.Delete(id);
             Database.Save();
 
