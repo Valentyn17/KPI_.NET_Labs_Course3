@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="DTO\GoodDTO.cs" />
     <Compile Include="DTO\OrderDTO.cs" />
+    <Compile Include="Infrastructure\AutoMapperConfiguration.cs" />
     <Compile Include="Infrastructure\ServiceModule.cs" />
     <Compile Include="Interfaces\IService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

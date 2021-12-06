@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BLL.DTO;
+using BLL.Infrastructure;
 using BLL.Interfaces;
 using DAL.Entities;
 using DAL.Enums;
@@ -61,7 +62,7 @@ namespace BLL.Services
             if (Name == null)
                 throw new InvalidOperationException(message: "Name was not setted");
             var goods = Database.Goods.Find(i => i.Name.Contains(Name));
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<Good, GoodDTO>()).CreateMapper();
+            var mapper = AutoMapperConfiguration.GetMapper();
             return mapper.Map<IEnumerable<Good>, List<GoodDTO>>(goods);
         }
 
@@ -73,7 +74,7 @@ namespace BLL.Services
 
         public IEnumerable<OrderDTO> GetOrders()
         {
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<Order, OrderDTO>()).CreateMapper();
+            var mapper = AutoMapperConfiguration.GetMapper();
             var orders = mapper.Map<IEnumerable<Order>, List<OrderDTO>>(Database.Orders.GetAll());
             foreach (var item in orders)
             {
@@ -119,8 +120,8 @@ namespace BLL.Services
                 }
                 else
                 {
-                    var config = new MapperConfiguration(cfg => cfg.CreateMap<OrderDTO, Order>());
-                    var mapper = new Mapper(config);
+                   
+                    var mapper = AutoMapperConfiguration.GetMapper();
                     Order order = mapper.Map<OrderDTO, Order>(orderDTO);
                     Database.Orders.Update(order);
                     Database.Save();
@@ -133,8 +134,8 @@ namespace BLL.Services
                 {
                     good.Count -= orderDTO.Count;
                     Database.Goods.Update(good);
-                    var config = new MapperConfiguration(cfg => cfg.CreateMap<OrderDTO, Order>());
-                    var mapper = new Mapper(config);
+                    
+                    var mapper = AutoMapperConfiguration.GetMapper();
 
                     order = mapper.Map<OrderDTO, Order>(orderDTO);
                     Database.Orders.Update(order);

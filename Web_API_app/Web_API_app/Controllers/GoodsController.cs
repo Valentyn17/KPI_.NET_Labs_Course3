@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Web_API_app.Configuration;
 using Web_API_app.Models;
 
 namespace Web_API_app.Controllers
@@ -22,7 +23,7 @@ namespace Web_API_app.Controllers
         // GET api/<controller>
         public IEnumerable<Good> Get()
         {
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<GoodDTO, Good>()).CreateMapper();
+            var mapper = AutoMapperConfiguration.GetMapper();
             var goods = mapper.Map<IEnumerable<GoodDTO>, List<Good>>(GoodService.GetGoods());
             return goods;
 
@@ -31,7 +32,7 @@ namespace Web_API_app.Controllers
         // GET api/<controller>/5
         public IHttpActionResult Get(int id)
         {
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<GoodDTO, Good>()).CreateMapper();
+            var mapper = AutoMapperConfiguration.GetMapper();
             var good = mapper.Map<GoodDTO, Good>(GoodService.GetGood(id));
             if (good == null) { return NotFound(); }
             return Ok(good);
@@ -41,7 +42,7 @@ namespace Web_API_app.Controllers
         [HttpPost]
         public HttpResponseMessage Post([FromBody] Good good)
         {
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<Good, GoodDTO>()).CreateMapper();
+            var mapper = AutoMapperConfiguration.GetMapper();
             var goodDTO = mapper.Map<Good, GoodDTO>(good);
             try
             {
@@ -60,7 +61,7 @@ namespace Web_API_app.Controllers
             {
                 return BadRequest();
             }
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<Good, GoodDTO>()).CreateMapper();
+            var mapper = AutoMapperConfiguration.GetMapper();
             var goodDTO = mapper.Map<Good, GoodDTO>(good);
             GoodService.UpdateGood(goodDTO); 
             return Ok(good);
@@ -76,9 +77,9 @@ namespace Web_API_app.Controllers
                 GoodService.DeleteGood(id);
                 return Ok(id);
             }
-            catch (ArgumentException e)
+            catch (InvalidOperationException e)
             {
-                return NotFound();
+                return BadRequest(e.Message);
             }
         }
     }
