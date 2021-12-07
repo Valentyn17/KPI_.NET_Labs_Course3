@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿using Web_API_app.App_Start;
 using BLL.DTO;
 using BLL.Interfaces;
 using System;
@@ -7,8 +7,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using Web_API_app.Configuration;
 using Web_API_app.Models;
+
 
 namespace Web_API_app.Controllers
 {

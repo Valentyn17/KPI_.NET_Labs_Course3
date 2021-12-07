@@ -6,7 +6,7 @@ using System.Linq;
 using System.Web;
 using Web_API_app.Models;
 
-namespace Web_API_app.Configuration
+namespace Web_API_app.App_Start
 {
     public class AutoMapperConfiguration
     {
