@@ -30,15 +30,25 @@ namespace Web_API_app.Controllers
         // GET api/<controller>/5
         public IHttpActionResult Get(int id)
         {
-            var imapper = AutoMapperConfiguration.GetMapper();
-            var order = imapper.Map<OrderDTO, Order>(OrderService.GetOrder(id));
-            if (order == null) { return NotFound(); }
-            return Ok(order);
-        }
+            try
+            {
+                var imapper = AutoMapperConfiguration.GetMapper();
+                var order = imapper.Map<OrderDTO, Order>(OrderService.GetOrder(id));
+
+                return Ok(order);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            }
 
         // POST api/<controller>
-        public HttpResponseMessage Post([FromBody] Order order)
+        public HttpResponseMessage Post(string email, int count, int goodId)
         {
+            if (!ModelState.IsValid)
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            Order order = new Order { Email = email, Count = count, GoodId = goodId };
             var imapper = AutoMapperConfiguration.GetMapper();
             var orderDTO = imapper.Map<Order, OrderDTO>(order);
             try
@@ -53,11 +63,14 @@ namespace Web_API_app.Controllers
         }
 
         // PUT api/<controller>/5
-        public IHttpActionResult Put(int id, [FromBody] Order order)
+        public IHttpActionResult Put([FromBody] Order order)
         {
             if (order == null)
             {
                 return BadRequest("Order can't be null");
+            }
+            if (!ModelState.IsValid) {
+                return BadRequest("Model is not valid");
             }
             try
             {

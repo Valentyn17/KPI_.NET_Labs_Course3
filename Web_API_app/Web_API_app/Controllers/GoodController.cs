@@ -12,10 +12,10 @@ using Web_API_app.Models;
 
 namespace Web_API_app.Controllers
 {
-    public class GoodsController : ApiController
+    public class GoodController : ApiController
     {
         IService GoodService;
-        public GoodsController(IService serv)
+        public GoodController(IService serv)
         {
             GoodService = serv;
         }
@@ -32,16 +32,28 @@ namespace Web_API_app.Controllers
         // GET api/<controller>/5
         public IHttpActionResult Get(int id)
         {
-            var mapper = AutoMapperConfiguration.GetMapper();
-            var good = mapper.Map<GoodDTO, Good>(GoodService.GetGood(id));
-            if (good == null) { return NotFound(); }
-            return Ok(good);
+            try
+            {
+                var mapper = AutoMapperConfiguration.GetMapper();
+                var good = mapper.Map<GoodDTO, Good>(GoodService.GetGood(id));
+                return Ok(good);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
+            
         }
 
         // POST api/<controller>
         [HttpPost]
         public HttpResponseMessage Post([FromBody] Good good)
         {
+            if (!ModelState.IsValid)
+            {
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            }
             var mapper = AutoMapperConfiguration.GetMapper();
             var goodDTO = mapper.Map<Good, GoodDTO>(good);
             try
@@ -55,11 +67,11 @@ namespace Web_API_app.Controllers
             }
 
         // PUT api/<controller>/5
-        public IHttpActionResult Put(int id, [FromBody] Good good)
+        public IHttpActionResult Put([FromBody] Good good)
         {
-            if (good == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest("Model is not valid");
             }
             var mapper = AutoMapperConfiguration.GetMapper();
             var goodDTO = mapper.Map<Good, GoodDTO>(good);

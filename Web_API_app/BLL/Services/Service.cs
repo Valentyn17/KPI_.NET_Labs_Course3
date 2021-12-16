@@ -68,7 +68,7 @@ namespace BLL.Services
 
         public IEnumerable<GoodDTO> GetGoods()
         {
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<Good, GoodDTO>()).CreateMapper();
+            var mapper = AutoMapperConfiguration.GetMapper();
             return mapper.Map<IEnumerable<Good>, List<GoodDTO>>(Database.Goods.GetAll());
         }
 
@@ -108,7 +108,11 @@ namespace BLL.Services
         {
             int count = orderDTO.Count;
             Good good = Database.Goods.Get(orderDTO.GoodId);
-            if (orderDTO.Status<Database.Orders.Get(orderDTO.Id).Status || orderDTO.Status==0)
+            Order order1 = Database.Orders.Get(orderDTO.Id);
+            if (orderDTO == null || order1==null || good==null)
+                throw new InvalidOperationException(message: $"Some object was null");
+            
+            if (orderDTO.Status < order1.Status || orderDTO.Status==0)
             {
                 throw new InvalidOperationException(message: "You can't change status from upper to lower");
             }
@@ -188,14 +192,13 @@ namespace BLL.Services
         {
             if (id == null)
                 throw new InvalidOperationException(message: "Id was not setted");
-            var good = Database.Goods.Get(id.Value);
-            if (good == null)
-                throw new InvalidOperationException("Can't find such good");
+            var order = Database.Orders.Get(id.Value);
+            if (order == null)
+                throw new InvalidOperationException("Can't find such order");
             var config = new MapperConfiguration(cfg => cfg.CreateMap<Order, OrderDTO>());
             var mapper = new Mapper(config);
-            OrderDTO order = mapper.Map<Order, OrderDTO>(Database.Orders.Get((int)id));
-            order.GoodName = good.Name;
-            return order;
+            OrderDTO order1 = mapper.Map<Order, OrderDTO>(order);
+            return order1;
 
         }
     }

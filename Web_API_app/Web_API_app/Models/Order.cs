@@ -21,7 +21,7 @@ namespace Web_API_app.Models
 
         public decimal Sum { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Select an item")]
+        [Range(1, 3, ErrorMessage = "Select an item")]
         public Status Status { get; set; }
         public int GoodId { get; set; }
 
