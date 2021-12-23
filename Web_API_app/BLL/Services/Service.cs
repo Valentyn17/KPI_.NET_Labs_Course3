@@ -98,7 +98,7 @@ namespace BLL.Services
                 Email= orderDto.Email,
                 Good = good,
                 Status=Status.New,
-                Count = orderDto.Count,
+                Count = orderDto.Count
             };
             Database.Orders.Create(order);
             Database.Save();
@@ -127,6 +127,7 @@ namespace BLL.Services
                    
                     var mapper = AutoMapperConfiguration.GetMapper();
                     Order order = mapper.Map<OrderDTO, Order>(orderDTO);
+                    
                     Database.Orders.Update(order);
                     Database.Save();
                 }
@@ -137,11 +138,13 @@ namespace BLL.Services
                 if (order.Status != Status.Confirmed)
                 {
                     good.Count -= orderDTO.Count;
+
                     Database.Goods.Update(good);
                     
                     var mapper = AutoMapperConfiguration.GetMapper();
 
                     order = mapper.Map<OrderDTO, Order>(orderDTO);
+                    order.Sum = good.Price * count;
                     Database.Orders.Update(order);
                     Database.Save();
                 }

@@ -1,4 +1,6 @@
 ﻿using DAL.Enums;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -22,6 +24,7 @@ namespace Web_API_app.Models
         public decimal Sum { get; set; }
 
         [Range(1, 3, ErrorMessage = "Select an item")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public Status Status { get; set; }
         public int GoodId { get; set; }
 

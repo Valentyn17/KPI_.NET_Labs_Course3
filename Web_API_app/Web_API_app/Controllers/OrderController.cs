@@ -44,13 +44,16 @@ namespace Web_API_app.Controllers
             }
 
         // POST api/<controller>
-        public HttpResponseMessage Post(string email, int count, int goodId)
+        [HttpPost]
+        public HttpResponseMessage Post([FromBody]OrderCreateModel createModel)
         {
-            if (!ModelState.IsValid)
-                return new HttpResponseMessage(HttpStatusCode.BadRequest);
-            Order order = new Order { Email = email, Count = count, GoodId = goodId };
+            
+            Order trueOrder = new Order { Email = createModel.Email, Count = createModel.Count, GoodId = createModel.GoodId };
+            
+            //if (!ModelState.IsValid)
+            //    return new HttpResponseMessage(HttpStatusCode.BadRequest);
             var imapper = AutoMapperConfiguration.GetMapper();
-            var orderDTO = imapper.Map<Order, OrderDTO>(order);
+            var orderDTO = imapper.Map<Order, OrderDTO>(trueOrder);
             try
             {
                 OrderService.MakeOrder(orderDTO);
@@ -91,7 +94,7 @@ namespace Web_API_app.Controllers
             try
             {
                 OrderService.DeleteOrder(id);
-                return Ok();
+                return Ok(id);
             }
             catch(InvalidOperationException ex) {
                return BadRequest(ex.Message);
