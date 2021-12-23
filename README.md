@@ -1,2 +1,2 @@
-# Web app Storage
-Web API app with multilayered architecture using on .NET Framework
+# Web app Storage on .NET Framework
+Web API app with multilayered architecture with Angular13 WebCLient and Console Client on .NET Framework
